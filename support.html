@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Support | Game Dev Log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- フォント（不要なら削除OK） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-elevated: #020617;
+      --panel: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --tag-bg: #0b1120;
+      --tag-border: #1f2937;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 50%, #000000 100%);
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === ヘッダー / ナビ === */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(15,23,42,0.7));
+      border-bottom: 1px solid rgba(15,23,42,0.9);
+    }
+
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #0ea5e9, #0369a1);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.7);
+    }
+
+    .logo span {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      color: var(--text-muted);
+      transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+    }
+
+    nav a:hover {
+      background: rgba(15,23,42,0.8);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    nav a.active {
+      background: rgba(15,23,42,0.9);
+      color: var(--accent);
+      border: 1px solid rgba(56,189,248,0.5);
+    }
+
+    /* === メイン === */
+
+    main {
+      flex: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 3rem;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding-top: 1.8rem;
+      }
+      .nav-inner {
+        padding-inline: 1rem;
+      }
+    }
+
+    /* === ヒーロー === */
+
+    .hero {
+      margin-bottom: 2.2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+      gap: 1.8rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-left h1 {
+      font-size: clamp(1.9rem, 3.2vw, 2.4rem);
+      margin: 0 0 0.6rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-left h1 span.badge {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.7);
+      background: rgba(15,23,42,0.9);
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .hero-sub {
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,0.95);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .hero-right {
+      position: relative;
+    }
+
+    .glass-panel {
+      position: relative;
+      border-radius: 1.4rem;
+      padding: 1rem 1rem 0.9rem;
+      border: 1px solid rgba(15,23,42,0.9);
+      background: radial-gradient(circle at 0% 0%, rgba(56,189,248,0.18), transparent 60%),
+                  radial-gradient(circle at 100% 100%, rgba(15,23,42,0.75), rgba(2,6,23,0.9));
+      box-shadow:
+        0 0 35px rgba(15,23,42,0.8),
+        0 0 80px rgba(56,189,248,0.18);
+    }
+
+    .glass-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .glass-dot-group {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .glass-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(15,23,42,0.9);
+    }
+
+    .glass-dot:nth-child(1) { background: #f97373; }
+    .glass-dot:nth-child(2) { background: #facc15; }
+    .glass-dot:nth-child(3) { background: #4ade80; }
+
+    .glass-body {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .support-stat {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+      font-size: 0.78rem;
+    }
+
+    .support-stat span {
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,0.95);
+      background: rgba(15,23,42,0.85);
+    }
+
+    /* === セクションヘッダー === */
+
+    .section-title {
+      font-size: 1rem;
+      margin: 0 0 0.3rem;
+    }
+
+    .section-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0 0 0.9rem;
+    }
+
+    /* === 支援オプション === */
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 840px) {
+      .support-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .support-card {
+      position: relative;
+      border-radius: 1.1rem;
+      padding: 1rem 1rem 1.1rem;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.85), rgba(2,6,23,1));
+      border: 1px solid rgba(15,23,42,1);
+      box-shadow: 0 16px 35px rgba(15,23,42,0.9);
+      overflow: hidden;
+      transition: transform 0.13s ease, box-shadow 0.13s ease, border 0.13s ease;
+    }
+
+    .support-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.13s ease;
+      pointer-events: none;
+    }
+
+    .support-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56,189,248,0.6);
+      box-shadow:
+        0 18px 40px rgba(15,23,42,0.95),
+        0 0 36px rgba(56,189,248,0.18);
+    }
+
+    .support-card:hover::before {
+      opacity: 1;
+    }
+
+    .support-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .support-name {
+      font-size: 0.98rem;
+      font-weight: 500;
+    }
+
+    .support-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(31,41,55,1);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .support-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 0.7rem;
+      line-height: 1.6;
+    }
+
+    .support-meta {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .support-meta ul {
+      margin: 0.3rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .support-meta li {
+      margin-bottom: 0.2rem;
+    }
+
+    .support-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    .support-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.8);
+      background: linear-gradient(to right, rgba(56,189,248,0.18), rgba(14,165,233,0.1));
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+    }
+
+    .support-button:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(to right, rgba(56,189,248,0.28), rgba(14,165,233,0.18));
+      box-shadow: 0 0 20px rgba(56,189,248,0.28);
+    }
+
+    .support-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.9;
+    }
+
+    /* === その他セクション === */
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 1.2rem;
+    }
+
+    @media (max-width: 840px) {
+      .info-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .info-card {
+      border-radius: 1.1rem;
+      padding: 1rem 1rem 1.1rem;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.85), rgba(2,6,23,1));
+      border: 1px solid rgba(15,23,42,1);
+      box-shadow: 0 16px 35px rgba(15,23,42,0.9);
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .info-card h3 {
+      font-size: 0.96rem;
+      margin-top: 0;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+
+    .info-card ul {
+      margin: 0.4rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .info-card li {
+      margin-bottom: 0.25rem;
+    }
+
+    /* === フッター === */
+
+    footer {
+      border-top: 1px solid rgba(15,23,42,1);
+      padding: 1.2rem 1.25rem 1.8rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    footer .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    footer a {
+      color: var(--text-muted);
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー / ナビ -->
+  <header>
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <div>
+          <div style="font-size:0.95rem;">Your Game Dev</div>
+          <span>Unity / Indie Dev</span>
+        </div>
+      </div>
+
+      <nav>
+        <a href="/index.html">Home</a>
+        <a href="/games.html">Games</a>
+        <a href="/dev-notes.html">Dev Notes</a>
+        <a href="/blog.html">Blog</a>
+        <a href="/support.html" class="active">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- メイン -->
+  <main>
+    <!-- ヒーロー -->
+    <section class="hero">
+      <div class="hero-left">
+        <h1>
+          Support
+          <span class="badge">Ko-fi / Booth</span>
+        </h1>
+        <p class="hero-sub">
+          個人でUnityゲーム開発を続けていくための、<br>
+          ちょっとした「応援」や「購入」の窓口です。<br>
+          気に入ったゲームや開発ログがあれば、コーヒー1杯分でも
+          サポートしてもらえると、とても励みになります。
+        </p>
+        <div class="hero-meta">
+          <span>☕ Ko-fi での投げ銭</span>
+          <span>🛒 Booth での作品・デジタル配布</span>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="glass-panel">
+          <div class="glass-panel-header">
+            <div class="glass-dot-group">
+              <div class="glass-dot"></div>
+              <div class="glass-dot"></div>
+              <div class="glass-dot"></div>
+            </div>
+            <span>support.log</span>
+          </div>
+          <div class="glass-body">
+            <p style="margin-top:0; margin-bottom:0.5rem;">
+              サポートはすべて<strong>任意</strong>です。<br>
+              無料で遊んだり、ブログを読むだけでも十分嬉しいです。
+            </p>
+            <div class="support-stat">
+              <span>✔ 開発継続のモチベーションに直結</span>
+              <span>✔ ツール・アセット・BGMなどの購入に充当</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 支援オプション -->
+    <section>
+      <h2 class="section-title">支援・販売の窓口</h2>
+      <p class="section-sub">
+        いま予定している（もしくは運用中の）プラットフォームです。リンク先はご自身のアカウントURLに差し替えてください。
+      </p>
+
+      <div class="support-grid">
+        <!-- Ko-fi -->
+        <article class="support-card">
+          <div class="support-card-header">
+            <div class="support-name">Ko-fi</div>
+            <div class="support-label">Tip / 投げ銭</div>
+          </div>
+          <p class="support-desc">
+            コーヒー1杯分から気軽に支援できるサービスです。
+            「ゲーム面白かった」「Dev Notesが役に立った」など、ささやかな応援にどうぞ。
+          </p>
+          <div class="support-meta">
+            こんなときに：
+            <ul>
+              <li>一度きりの「ありがとう」を投げたい</li>
+              <li>Twitter / X 経由で簡単にリンクを流したい</li>
+              <li>クレカでサクッと支援したい</li>
+            </ul>
+          </div>
+          <div class="support-actions">
+            <a class="support-button" href="https://ko-fi.com/yourname" target="_blank" rel="noopener noreferrer">
+              Ko-fi ページへ
+            </a>
+            <span class="support-note">※ <code>yourname</code> を自分のIDに変更してください。</span>
+          </div>
+        </article>
+
+        <!-- Booth -->
+        <article class="support-card">
+          <div class="support-card-header">
+            <div class="support-name">Booth</div>
+            <div class="support-label">作品販売</div>
+          </div>
+          <p class="support-desc">
+            ゲーム本体やサウンドトラック、資料PDFなどを配布・販売する予定のストアです。
+            体験版無料／完全版有料といった形も取りやすいプラットフォーム。
+          </p>
+          <div class="support-meta">
+            置く予定のもの：
+            <ul>
+              <li>完成したゲームのダウンロード版</li>
+              <li>開発ノート・アートブック的なPDF</li>
+              <li>サウンドトラックやBGM集 など</li>
+            </ul>
+          </div>
+          <div class="support-actions">
+            <a class="support-button" href="https://yourname.booth.pm/" target="_blank" rel="noopener noreferrer">
+              Booth ストアへ
+            </a>
+            <span class="support-note">※ <code>yourname</code> を自分のストアURLに変更してください。</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- その他 / FAQ 的な -->
+    <section>
+      <div class="info-grid">
+        <article class="info-card">
+          <h3>サポートで何が変わるの？</h3>
+          <p>
+            いただいた支援は、主に以下のような用途に使わせてもらう想定です。
+          </p>
+          <ul>
+            <li>有料アセット・プラグイン（DOTween Pro など）の購入</li>
+            <li>BGM・SE・フォントなどのライセンス費用</li>
+            <li>開発用クラウドサービスやストレージの維持費</li>
+          </ul>
+          <p>
+            直接的にゲームのクオリティアップや、継続的な開発時間の確保につながります。
+          </p>
+        </article>
+
+        <article class="info-card">
+          <h3>無料で十分楽しめます</h3>
+          <p>
+            サポートはあくまで「もっと応援したい」と思ってくれた方向けのオプションです。
+          </p>
+          <ul>
+            <li>ゲームを遊んで感想を送る</li>
+            <li>バグ報告やフィードバックをもらう</li>
+            <li>ブログ記事をシェアしてもらう</li>
+          </ul>
+          <p>
+            こういった無料のアクションも、開発者的にはとてもありがたい応援です。
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- フッター -->
+  <footer>
+    <div class="footer-inner">
+      <div>© <span id="year"></span> Your Game Dev Support</div>
+      <div>
+        <a href="https://github.com/yourname" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
