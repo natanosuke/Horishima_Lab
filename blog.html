@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blog | Game Dev Log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- フォント（不要なら削除OK） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-elevated: #020617;
+      --panel: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2937;
+      --tag-bg: #0b1120;
+      --tag-border: #1f2937;
+      --danger: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 50%, #000000 100%);
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === ヘッダー / ナビ === */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(15,23,42,0.7));
+      border-bottom: 1px solid rgba(15,23,42,0.9);
+    }
+
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #0ea5e9, #0369a1);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.7);
+    }
+
+    .logo span {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      color: var(--text-muted);
+      transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+    }
+
+    nav a:hover {
+      background: rgba(15,23,42,0.8);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    nav a.active {
+      background: rgba(15,23,42,0.9);
+      color: var(--accent);
+      border: 1px solid rgba(56,189,248,0.5);
+    }
+
+    /* === メインコンテナ === */
+
+    main {
+      flex: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 3rem;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding-top: 1.8rem;
+      }
+      .nav-inner {
+        padding-inline: 1rem;
+      }
+    }
+
+    /* === ヒーロー部分 === */
+
+    .hero {
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+      gap: 1.75rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-left h1 {
+      font-size: clamp(1.9rem, 3.2vw, 2.4rem);
+      margin: 0 0 0.6rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-left h1 span.badge {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.7);
+      background: rgba(15,23,42,0.9);
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .hero-sub {
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,0.95);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .hero-right {
+      position: relative;
+    }
+
+    .glass-panel {
+      position: relative;
+      border-radius: 1.4rem;
+      padding: 1rem 1rem 0.9rem;
+      border: 1px solid rgba(15,23,42,0.9);
+      background: radial-gradient(circle at 0% 0%, rgba(56,189,248,0.18), transparent 60%),
+                  radial-gradient(circle at 100% 100%, rgba(15,23,42,0.75), rgba(2,6,23,0.9));
+      box-shadow:
+        0 0 35px rgba(15,23,42,0.8),
+        0 0 80px rgba(56,189,248,0.18);
+    }
+
+    .glass-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .glass-dot-group {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .glass-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(15,23,42,0.9);
+    }
+
+    .glass-dot:nth-child(1) { background: #f97373; }
+    .glass-dot:nth-child(2) { background: #facc15; }
+    .glass-dot:nth-child(3) { background: #4ade80; }
+
+    .glass-body {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .glass-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(15,23,42,0.95);
+      margin-right: 0.35rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .glass-pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    /* === 検索セクション === */
+
+    .search-section {
+      margin-bottom: 1.8rem;
+      padding: 1.1rem 1rem;
+      border-radius: 1.1rem;
+      border: 1px solid rgba(15,23,42,0.95);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.97));
+      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
+    }
+
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.9rem;
+    }
+
+    .search-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input-wrap input {
+      width: 100%;
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,1);
+      padding: 0.55rem 2.4rem 0.55rem 0.9rem;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .search-input-wrap input::placeholder {
+      color: #4b5563;
+    }
+
+    .search-input-wrap input:focus {
+      border-color: rgba(56,189,248,0.8);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+      background: #020617;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 0.85rem;
+      font-size: 0.9rem;
+      color: #6b7280;
+      pointer-events: none;
+    }
+
+    .search-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      align-items: center;
+    }
+
+    .search-meta span.hint {
+      opacity: 0.8;
+    }
+
+    .search-meta span.count {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* === タグフィルタ === */
+
+    .tag-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .tag-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag-btn {
+      font-size: 0.8rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--tag-border);
+      background: var(--tag-bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.15s ease, border 0.15s ease, color 0.15s ease, transform 0.08s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .tag-btn span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #4b5563;
+    }
+
+    .tag-btn:hover {
+      background: rgba(15,23,42,0.9);
+      border-color: rgba(55,65,81,1);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .tag-btn.active {
+      border-color: rgba(56,189,248,0.8);
+      background: rgba(15,23,42,1);
+      color: var(--accent);
+    }
+
+    .tag-btn.active span.dot {
+      background: var(--accent);
+    }
+
+    /* === 結果リスト === */
+
+    .results {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.15rem;
+    }
+
+    @media (max-width: 840px) {
+      .results {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .note-card {
+      position: relative;
+      border-radius: 1.1rem;
+      padding: 0.95rem 1rem 0.95rem;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.85), rgba(2,6,23,1));
+      border: 1px solid rgba(15,23,42,1);
+      box-shadow: 0 16px 35px rgba(15,23,42,0.9);
+      overflow: hidden;
+      transition: transform 0.13s ease, box-shadow 0.13s ease, border 0.13s ease;
+    }
+
+    .note-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.13s ease;
+      pointer-events: none;
+    }
+
+    .note-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56,189,248,0.6);
+      box-shadow:
+        0 18px 40px rgba(15,23,42,0.95),
+        0 0 36px rgba(56,189,248,0.18);
+    }
+
+    .note-card:hover::before {
+      opacity: 1;
+    }
+
+    .note-title {
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 0 0 0.4rem;
+    }
+
+    .note-title a {
+      color: var(--text);
+    }
+
+    .note-title a:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .note-meta {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-bottom: 0.55rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .note-meta span.kind {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+      color: #6b7280;
+    }
+
+    .note-excerpt {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+      line-height: 1.6;
+    }
+
+    .note-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      font-size: 0.74rem;
+    }
+
+    .note-tag-pill {
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      color: #9ca3af;
+    }
+
+    .empty-state {
+      padding: 1.4rem 1.1rem;
+      border-radius: 1.1rem;
+      border: 1px dashed #1f2937;
+      background: rgba(15,23,42,0.9);
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* === フッター === */
+
+    footer {
+      border-top: 1px solid rgba(15,23,42,1);
+      padding: 1.2rem 1.25rem 1.8rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    footer .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    footer a {
+      color: var(--text-muted);
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー / ナビ -->
+  <header>
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <div>
+          <div style="font-size:0.95rem;">Your Game Dev</div>
+          <span>Unity / Indie Dev</span>
+        </div>
+      </div>
+
+      <nav>
+        <a href="/index.html">Home</a>
+        <a href="/games.html">Games</a>
+        <a href="/dev-notes.html">Dev Notes</a>
+        <a href="/blog.html" class="active">Blog</a>
+        <a href="/support.html">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- メイン -->
+  <main>
+    <!-- ヒーロー部分 -->
+    <section class="hero">
+      <div class="hero-left">
+        <h1>
+          Dev Blog
+          <span class="badge">Progress & Stories</span>
+        </h1>
+        <p class="hero-sub">
+          日々の開発ログや進捗報告、実装時の裏話などを残していくブログです。<br />
+          「なに作ってるの？」「最近どこまで進んだ？」が分かる場所。<br>
+          後から見返してモチベにもなるやつ。
+        </p>
+        <div class="hero-meta">
+          <span>🎮 Unityゲーム開発の進捗メモ</span>
+          <span>📝 実装裏話・失敗談・振り返り</span>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="glass-panel">
+          <div class="glass-panel-header">
+            <div class="glass-dot-group">
+              <div class="glass-dot"></div>
+              <div class="glass-dot"></div>
+              <div class="glass-dot"></div>
+            </div>
+            <span>blog.log</span>
+          </div>
+          <div class="glass-body">
+            <p style="margin-top:0; margin-bottom:0.5rem;">
+              こんなカテゴリのブログを書いていく想定：
+            </p>
+            <div>
+              <span class="glass-pill"><span class="dot"></span>DevLog（開発進捗）</span>
+              <span class="glass-pill"><span class="dot"></span>リリース報告</span>
+              <span class="glass-pill"><span class="dot"></span>仕様変更の理由</span>
+              <span class="glass-pill"><span class="dot"></span>振り返り / ポストモーテム</span>
+            </div>
+            <p style="margin-top:0.55rem; font-size:0.78rem; opacity:0.9;">
+              検索はタイトル・タグ・本文が対象。<br />
+              キーワードとタグで「読みたい話」にすぐたどり着けます。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 検索フォーム -->
+    <section class="search-section">
+      <div class="search-row">
+        <div class="search-label">キーワード検索</div>
+        <div class="search-input-wrap">
+          <input id="search-input" type="search" placeholder="例: DevLog / UI / リリース / 振り返り など" />
+          <span class="search-icon">⌕</span>
+        </div>
+      </div>
+      <div class="search-meta">
+        <span class="hint">タイトル・タグ・本文から検索します。</span>
+        <span class="count" id="post-count">0 posts</span>
+      </div>
+    </section>
+
+    <!-- タグ -->
+    <section class="tag-section">
+      <div class="tag-label">タグで絞り込み</div>
+      <div class="tag-list" id="tag-list">
+        <!-- JSで生成 -->
+      </div>
+    </section>
+
+    <!-- 結果 -->
+    <section id="results-container">
+      <div class="results" id="results"></div>
+    </section>
+  </main>
+
+  <!-- フッター -->
+  <footer>
+    <div class="footer-inner">
+      <div>© <span id="year"></span> Your Game Dev Blog</div>
+      <div>
+        <a href="https://github.com/yourname" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 仮のブログデータ（ここを自分の内容に差し替え） -->
+  <script>
+    const blogPosts = [
+      {
+        id: "blog-001",
+        title: "プロトタイプ第1弾のバトルが形になった",
+        tags: ["DevLog", "Battle", "Unity"],
+        body: "今日はバトルシーンのプロトタイプを集中して実装。とりあえず攻撃と被ダメの流れが動いたので、次はエフェクトとヒットストップを入れて気持ちよさを出していく予定。",
+        url: "/blog/prototype-battle-first.html",
+        date: "2025-11-18"
+      },
+      {
+        id: "blog-002",
+        title: "UIレイアウトを一度全部捨てて作り直した話",
+        tags: ["DevLog", "UI", "UX"],
+        body: "メニューUIがごちゃごちゃしてきたので、思い切って一度全部捨てて作り直し。ボタン配置や情報量を整理したらだいぶスッキリした。まだ調整中だけど、今回の反省点もメモしておく。",
+        url: "/blog/ui-redesign.html",
+        date: "2025-11-20"
+      },
+      {
+        id: "blog-003",
+        title: "初公開テスト版を友人に遊んでもらった感想",
+        tags: ["Playtest", "Feedback", "DevLog"],
+        body: "友人にテストプレイしてもらったところ、チュートリアルの説明不足と難易度カーブの急さが判明。実際に触ってもらうと、想定と全然違うところで詰まるのが面白い。",
+        url: "/blog/first-playtest.html",
+        date: "2025-11-22"
+      },
+      {
+        id: "blog-004",
+        title: "週次振り返り：今週できたこと・来週やること",
+        tags: ["Weekly", "Retrospective", "DevLog"],
+        body: "今週はバトル周りの基礎とUIの整理が進んだ一方、ステージ構成にはあまり手をつけられなかった。来週は演出強化とステージ1の仮配置を優先する予定。",
+        url: "/blog/weekly-retro-2025-11-24.html",
+        date: "2025-11-24"
+      }
+    ];
+  </script>
+
+  <!-- 検索・描画ロジック（Lunrなし・手書き全文検索） -->
+  <script>
+    // 年表示
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const searchInput = document.getElementById("search-input");
+    const resultsDiv = document.getElementById("results");
+    const resultsContainer = document.getElementById("results-container");
+    const tagListEl = document.getElementById("tag-list");
+    const postCountEl = document.getElementById("post-count");
+
+    let currentTag = "";
+
+    // ▼ タグ一覧生成
+    function buildTags() {
+      const tagSet = new Set();
+      blogPosts.forEach(p => p.tags.forEach(t => tagSet.add(t)));
+
+      const tags = Array.from(tagSet).sort((a, b) => a.localeCompare(b));
+
+      // Allボタン
+      const allBtn = document.createElement("button");
+      allBtn.className = "tag-btn active";
+      allBtn.dataset.tag = "";
+      allBtn.innerHTML = `<span class="dot"></span>All`;
+      tagListEl.appendChild(allBtn);
+
+      // タグボタン
+      tags.forEach(tag => {
+        const btn = document.createElement("button");
+        btn.className = "tag-btn";
+        btn.dataset.tag = tag;
+        btn.innerHTML = `<span class="dot"></span>${tag}`;
+        tagListEl.appendChild(btn);
+      });
+
+      // イベント
+      const buttons = tagListEl.querySelectorAll(".tag-btn");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentTag = btn.dataset.tag;
+          filterAndSearch();
+        });
+      });
+    }
+
+    // ▼ 描画
+    function renderResults(posts) {
+      resultsDiv.innerHTML = "";
+      resultsDiv.style.display = "";
+      postCountEl.textContent = `${posts.length} post${posts.length === 1 ? "" : "s"}`;
+
+      // 以前の empty-state を削除
+      const oldEmpty = resultsContainer.querySelector(".empty-state");
+      if (oldEmpty) oldEmpty.remove();
+
+      if (posts.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.innerHTML = `
+          条件に合う記事が見つかりませんでした。<br/>
+          キーワードやタグを少し変えてみてください。
+        `;
+        resultsDiv.style.display = "none";
+        resultsContainer.appendChild(empty);
+        return;
+      }
+
+      posts.forEach(post => {
+        const card = document.createElement("article");
+        card.className = "note-card";
+        card.innerHTML = `
+          <h2 class="note-title"><a href="${post.url}">${post.title}</a></h2>
+          <div class="note-meta">
+            <span class="kind">BLOG</span>
+            <span>${post.date || ""}</span>
+          </div>
+          <p class="note-excerpt">${post.body.substring(0, 90)}...</p>
+          <div class="note-tags">
+            ${post.tags.map(t => `<span class="note-tag-pill">${t}</span>`).join("")}
+          </div>
+        `;
+        resultsDiv.appendChild(card);
+      });
+    }
+
+    // ▼ 手書き全文検索 + タグフィルタ
+    function filterAndSearch() {
+      const q = searchInput.value.trim();
+      const lowerQ = q.toLowerCase();
+
+      let posts = blogPosts.filter(p => {
+        if (!q) return true; // 検索ワードなし → 全件
+
+        const inTitle = p.title.toLowerCase().includes(lowerQ);
+        const inBody  = p.body.toLowerCase().includes(lowerQ);
+        const inTags  = p.tags.some(t => t.toLowerCase().includes(lowerQ));
+
+        return inTitle || inBody || inTags;
+      });
+
+      if (currentTag) {
+        posts = posts.filter(p => p.tags.includes(currentTag));
+      }
+
+      renderResults(posts);
+    }
+
+    searchInput.addEventListener("input", filterAndSearch);
+
+    // 初期化
+    buildTags();
+    renderResults(blogPosts);
+  </script>
+</body>
+</html>
