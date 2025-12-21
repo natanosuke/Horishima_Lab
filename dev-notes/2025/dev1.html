@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Home | Game Dev Log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- フォント -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- 共通CSS -->
+   <link rel="stylesheet" href="../../assets/css/style.css">
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4S94TX80NK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4S94TX80NK');
+</script>
+</head>
+<body>
+
+<header>
+  <!-- ヘッダー / ナビ -->
+  <header>
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <div>
+          <div style="font-size:0.95rem;">My Game Dev</div>
+          <span>Unity / Indie Dev</span>
+        </div>
+      </div>
+
+      <nav>
+        <a href="../../index.html" class="active">Home</a>
+        <a href="../../games.html">Games</a>
+        <a href="../../dev-notes.html">Dev Notes</a>
+        <a href="../../blog.html">Blog</a>
+        <a href="../../support.html">Support</a>
+      </nav>
+    </div>
+  </header>
+</header>
+
+<main>
+  <article>
+    <h1>DOTweenで移動させる基本</h1>
+
+    <p class="meta">
+      2025-11-18 / Unity / DOTween
+    </p>
+
+    <p>
+      DOTween の DOMove を使った基本的な移動処理についてのメモ。
+    </p>
+
+    <pre><code>
+transform.DOMove(targetPos, 1.0f);
+    </code></pre>
+  </article>
+</main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>© <span id="year"></span> My Game Dev Portfolio</div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
