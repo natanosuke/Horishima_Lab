@@ -2,75 +2,431 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>Home | Game Dev Log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unity・Azure DevOps・SourceTreeの連携方法について | Dev Notes</title>
+
   <!-- フォント -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- 共通CSS -->
-   <link rel="stylesheet" href="../../assets/css/style.css">
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4S94TX80NK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.4/css/all.css">
 
-  gtag('config', 'G-4S94TX80NK');
-</script>
+  <!-- 共通CSS（記事用） -->
+  <link rel="stylesheet" href="../../assets/css/styleposts.css">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4S94TX80NK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4S94TX80NK');
+  </script>
 </head>
 <body>
-
-<header>
-  <!-- ヘッダー / ナビ -->
+  <!-- ===== Header / Nav ===== -->
   <header>
     <div class="nav-inner">
       <div class="logo">
         <div class="logo-mark"></div>
         <div>
-          <div style="font-size:0.95rem;">My Game Dev</div>
-          <span>Unity / Indie Dev</span>
+          <div style="font-size:0.95rem;">Horishima_GameLab</div>
         </div>
       </div>
 
       <nav>
-        <a href="../../index.html" class="active">Home</a>
+        <a href="../../index.html">Home</a>
         <a href="../../games.html">Games</a>
-        <a href="../../dev-notes.html">Dev Notes</a>
+        <a href="../../dev-notes.html" class="active">Dev Notes</a>
         <a href="../../blog.html">Blog</a>
         <a href="../../support.html">Support</a>
       </nav>
     </div>
   </header>
-</header>
 
-<main>
-  <article>
-    <h1>DOTweenで移動させる基本</h1>
+  <!-- ===== Main ===== -->
+  <main>
+    <article class="info-box">
+      <h1 style="margin-top:0;">Unity・Azure DevOps・SourceTreeの連携方法について</h1>
+      <p style="color:#9ca3af; font-size:0.85rem;">
+        作成日：2025-12-25 / カテゴリ：Azure DevOps, Sourcetree, Git, Unity
+      </p>
+      <!-- 目次ここから -->
+      <div class="toc-container" id="toc">
+        <div class="toc-header">
+          <div class="toc-header-title">目次</div>
+          <div class="toc-toggle-icon">▶</div>
+        </div>
+        <div class="toc-body">
+          <ul class="toc-list">
+            <li><a href="#sec-1">1. Azure DevOps　プロジェクト（リポジトリ）の作成、認種情報の準備</a></li>
+            <li><a href="#sec-2">2. Unity　プロジェクト（リポジトリ）の作成とGit向け設定</a></li>
+            <li><a href="#sec-3">3. Sourcetree　ローカル（Unity）とリモート（Azure DevOps）リポジトリの連携</a></li>
+            <li><a href="#sec-4">4. 認証エラーが出たときの対処</a></li>
+            <li><a href="#sec-5">5. ブランチ運用例（個人開発向け）</a></li>
+            <li><a href="#sec-6">6. まとめ</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- 目次ここまで -->
+      <p>
+        個人開発で、<strong>Azure DevOps</strong> のリポジトリと <strong>SourceTree</strong> を連携させて
+        Unity プロジェクトを管理するまでの手順をまとめたメモです。<br>
+        実際に行った環境は以下のとおりです。
+      </p>
+      <ul>
+        <li>リモートリポジトリ（Git管理）：Azure DevOps</li>
+        <li>Gitクライアント（操作ツール）：SourceTree（Mac）</li>
+        <li>ゲーム開発環境（エンジン）：Unity</li>
+      </ul>
+      <hr style="border:1px solid #1f2937; margin:1.5rem 0;">
 
-    <p class="meta">
-      2025-11-18 / Unity / DOTween
-    </p>
+      <h2 id="sec-1" class="section-anchor">手順１：Azure DevOps　プロジェクト（リポジトリ）の作成、認種情報の準備</h2>
+      <h3>＜Azure DevOpsのセットアップ（重要）＞</h3>
+      <p>
+        まずは「置き場所」を作ります。そして、Sourcetreeがログインできるように<strong>Personal Access Token (PAT) </strong> を発行します。これが最も確実な連携方法です。
+      </p>
+      <ol>
+        <h4><li>プロジェクト作成</li></h3>
+            <ul>
+              <li>Azure DevOpsにログインし、「+ New Project」をクリック。</li>
+              <li>Project nameを入力し、Visibilityは通常「Private」を選択して「CreateProject」。</li>
+              <img src="../../assets/img/dev1-1.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:80%; height:auto; max-width:800px; border-radius:10px;">
+            </ul>
+        <h4><li>リポジトリURLの取得</li></h4>
+            <ul>
+              <li>左メニューの Repos > Files をクリック。</li>
+              <li>「HTTPS」が選択されていることを確認します。</li>
+              <li>（例: https://organization@dev.azure.com/organization/project/_git/project）</li>
+            </ul>
+        <h4><li><strong>Personal Access Token (PAT) </strong>の発行</li></h4>
+            <ul>
+              <li>ここがポイントです。通常のパスワードではSourceTreeからの認証が弾かれることが多いため、専用のパスワード（トークン）を作ります。</li>
+              <li>右上のユーザー設定アイコン（歯車と人） > Personal access tokens をクリック。</li>
+                <div class="img-row">
+                  <img src="../../assets/img/dev1-3.png"
+                       alt="Azure DevOps Repos 画面の例"
+                       style="width:30%; height:auto; max-width:800px; border-radius:10px;">
+                </div>
+              <li>「+ New Token」をクリック。</li>
+              <img src="../../assets/img/dev1-2.png"
+                       alt="Azure DevOps Repos 画面の例"
+                       style="width:30%; height:auto; max-width:800px; border-radius:10px;">
+              <li>「Create」を押し、表示されたトークン（長い文字列）を必ずコピーしてメモ帳などに控えてください。</li>
+              <p>Name: わかりやすい名前（例: SourceTree）</p>
+              <p>Expiration: 有効期限（開発期間に合わせて設定）</p>
+              <p>Scopes: 下の方にある Code の項目で Read & Write にチェックを入れる（これで読み書き権限が付与されます）。</p>
+              <img src="../../assets/img/dev1-4.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:40%; height:auto; max-width:800px; border-radius:10px;">
+              <p>> 注意: この画面を閉じると二度と表示されません！</p>
+            </ul>
+      </ol>
+      
+      <h2 id="sec-2" class="section-anchor">手順２：Unity　プロジェクト（リポジトリ）の作成とGit向け設定</h2>
+      <h3>＜Unity プロジェクトの準備＞</h3>
+      <ol>
+        <h4><li>Unity Hubからプロジェクトを新規作成します。</li></h4>
+            <ul>
+              <li>プロジェクト名を入力し、保存場所を確定したら「+ プロジェクトを作成」をクリック。</li>
+              <img src="../../assets/img/dev1-5.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:60%; height:auto; max-width:800px; border-radius:10px;">
+              <li>Unityを一度終了します。</li>
+            </ul>
+        <h4><li>サイトから取得したinit.shを実行します。</li></h4>
+            <ul>
+              <li><a href= "https://sasami-daifuku.com/unity-project-init-settings-2" >https://sasami-daifuku.com/unity-project-init-settings-2</a>このサイトからinit.shを取得。</li>
+              <li>プロジェクトフォルダにinit.shを保存。</li>
+            </ul>
+        <h4><li>Unityの初期設定を完了。</li></h4>
+              <ul>
+              <li>プロジェクトフォルダ選択しつつ右クリックでターミナルを開く。</li>
+              <img src="../../assets/img/dev1-6.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:60%; height:auto; max-width:800px; border-radius:10px;">
+              <li>[sh init.sh]をターミナルに入力しEnterキーを押して実行。</li>
+              <li>プロジェクト名を入力し、入力後再びEnterキーを押して実行</li>
+              <li>.gitignore、.gitattributesファイルとディレクトリが作成されていることを確認します。
+              <br>※.gitignore、.gitattributesファイルは隠しファイルのため[Command + shift + .]を押して表示する</li>
+            </ul>
+      <h4><li>.gitignore（Unity 用）の内容</li></h4>
+        <p>以下のような .gitignore が設定される（サイトから少し追加している）。</p>
+          <pre style="font-size:0.8rem; background:#020617; padding:0.75rem 0.9rem; border-radius:0.75rem; overflow-x:auto;"><code># Unity
+    /[Ll]ibrary/
+    /[Tt]emp/
+    /[Oo]bj/
+    /[Bb]uild/
+    /[Bb]uilds/
+    /[Ll]ogs/
+    /[Uu]ser[Ss]ettings/
+    /Assets/AssetStoreTools*
 
-    <p>
-      DOTween の DOMove を使った基本的な移動処理についてのメモ。
-    </p>
+    # Autogenerated VS/MD solution and project files
+    ExportedObj/
+    *.csproj
+    *.unityproj
+    *.sln
+    *.suo
+    *.tmp
+    *.user
+    *.userprefs
+    *.pidb
+    *.booproj
+    *.svd
 
-    <pre><code>
-transform.DOMove(targetPos, 1.0f);
-    </code></pre>
-  </article>
-</main>
+    # Unity3D generated meta files
+    *.pidb.meta
 
+    # Unity3D Generated File On Crash Reports
+    sysinfo.txt
+
+    # Builds
+    *.apk
+    *.unitypackage
+
+    # Visual Studio
+    .vs
+    Release/
+    Debug/
+        </code></pre>
+      </ol>
+
+      <h2 id="sec-3" class="section-anchor">手順３:Sourcetree　ローカル（Unity）とリモート（Azure DevOps）リポジトリの連携</h2>
+      <h3>＜Sourcetreeの設定＞</h3>
+      <ol>
+        <h4><li>ローカル（Unity）リポジトリとの接続</li></h3>
+            <ul>
+              <li>SourceTreeを開き、「新規...」> 「既存のローカルリポジトリを追加」を選択。</li>
+              <img src="../../assets/img/dev1-7.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:80%; height:auto; max-width:800px; border-radius:10px;">
+              <li>「保存先のパス」に、先ほど作ったUnityプロジェクトのフォルダを指定し、作成をクリック。</li>
+              <img src="../../assets/img/dev1-8.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:80%; height:auto; max-width:800px; border-radius:10px;">
+            </ul>
+        <h4><li>Azure DevOpsアカウントとの連携</li></h4>
+            <ul>
+              <li>SourceTreeの「設定」> 「アカウント」タブ > 「追加」をクリック。</li>
+              <img src="../../assets/img/dev1-9.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:50%; height:auto; max-width:800px; border-radius:10px;">
+              <li>必要項目を入力し、「保存」をクリック。</li>
+              <p>ホスト: Azure DevOps</p>
+              <p>URL: https://dev.azure.com/natanosuke（https://dev.azure.com/[組織名]）</p>
+              <p>ユーザー名: メールアドレス</p>
+              <p>Private Token: 手順1-3のPersonal Access Token (PAT)を貼り付け</p>
+              <p>プロトコル:HTTPS</p>
+              <img src="../../assets/img/dev1-10.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:70%; height:auto; max-width:800px; border-radius:10px;">
+              <p>> 注意: Personal Access Token (PAT)は複数台PCを使う場合、その都度必要なため管理しておくこと。</p>
+            </ul>
+        <h4><li>リモート（Azure DevOps）リポジトリとの接続</li></h4>
+            <ul>
+              <li>ローカルリポジトリをダブルクリックした後、SourceTreeの「リポジトリ」タブを選択し、「リポジトリ設定」を選択後に「追加」をクリック。</li>
+              <img src="../../assets/img/dev1-11.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:50%; height:auto; max-width:800px; border-radius:10px;">
+              <li>必要項目を入力し、「OK」をクリック。</li>
+              <p>リモート名: origin（デフォルトのまま）</p>
+              <p>URL / パス: Azure DevOpsのHTTPS URL</p>
+              <img src="../../assets/img/dev1-12.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:50%; height:auto; max-width:800px; border-radius:10px;">
+              <p>ホスティングサービス: Azure DevOps</p>
+              <img src="../../assets/img/dev1-13.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:70%; height:auto; max-width:800px; border-radius:10px;">
+              <p>> 注意: https://〜＠の間をAzure DevOpsに登録したメールアドレスに変更する</p>
+            </ul>
+            <h4><li>Gitの操作（認証）</li></h4>
+            <ul>
+              <li>Sourcetreeのファイルを全部選択し、コミットメッセージに「Initial Commit」を入力し、上部メニューまたは右にある「コミット」をクリック。</li>
+              <img src="../../assets/img/dev1-9.png"
+                   alt="Azure DevOps Repos 画面の例"
+                   style="width:50%; height:auto; max-width:800px; border-radius:10px;">
+              <li>Sourcetreeの上部メニューにある「プッシュ」をクリックし「OK」をクリック。</li>
+              <li>Azure DevOpsのリモートリポジトリがプッシュを反映されていれば完了。</li>
+            </ul>
+      </ol>
+
+      <h2 id="sec-4" class="section-anchor">手順４：認証エラーが出たときの対処</h2>
+      <h3>＜エラーの対処＞</h3>
+      <ol>
+        <h4><li>保存済み認証情報の削除（Mac / Windows 共通の考え方）</li></h3>
+          <p>過去のPATが残っている場合、認証されないため、キーチェンアクセスでSourceTreeで検索すると上記のようにazure.comが記載されたURLが表示されるため、該当のURLを削除して再度PATを発行する必要がある。</p>
+            <ul>
+              <li>Mac：Keychain Access（キーチェーンアクセス）で azure.com関連を削除。</li>
+              <li>Windows：資格情報マネージャーで azure.com関連の保存情報を削除。</li>
+            </ul>
+        <h4><li>URLの再確認</li></h3>
+            <ul>
+              <li>手順3-2でAzure DevOpsの Repos 画面で、「HTTPS」の URL をコピペし、https://〜＠の間をAzure DevOpsに登録したメールアドレスに変更したか。</li>
+              <li>ssh://から始まる URL を誤って使っていないか。</li>
+            </ul>
+      </ol>
+
+      <h2 id="sec-5" class="section-anchor">手順５：ブランチ運用例（個人開発向け）</h2>
+      <h3>＜個人開発でよく使うシンプルな運用例＞</h3>
+      <ol>
+        <h4><li>ブランチの切り方</li></h3>
+            <ul>
+              <li><strong>main</strong>：リリース用（安定版）</li>
+              <li><strong>develop</strong>：開発中のメインブランチ</li>
+              <li>必要に応じて <strong>feature/◯◯</strong> ブランチを切って作業</li>
+            </ul>
+          <h4><li>フローの一例</li></h3>
+            <ul>
+              <li>develop ブランチで普段の開発・コミット・push。</li>
+              <li>リリースタイミングで develop → main にマージ。</li>
+              <li>main からビルド・配布。</li>
+              <li>develop ブランチは削除せず、そのまま次の開発に使う。</li>
+            </ul>
+          <h4><li>タグによるバージョン管理</li></h3>
+            <ul>
+              <li>v1.0.0 のように<メジャーバージョン>.<マイナーバージョン>.<パッチバージョン>とします</li>
+              <li>開発版は 0.1.0 から、正式版は 1.0.0 から始めます</li>
+              <li>バグ修正では<パッチバージョン> を、機能性の追加では<マイナーバージョン>を、後方互換性を持たない変更では<メジャーバージョン>を上げます</li>
+              <li>プレリリースバージョンは 1.0.0-alpha, 1.0.0-alpha.1のように -<ドットで区切られた識別子> を付加します。これらの例は 1.0.0 よりも前のバージョンであることを表します。
+                  <br>プレリリースバージョンは早い順に 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0 のようになります。</li>
+            </ul>
+      </ol>
+
+      <hr style="border:1px solid #1f2937; margin:1.5rem 0;">
+      <h2 id="sec-6" class="section-anchor">まとめ</h2>
+      <ul>
+        <li><strong>手順1（Azure DevOps）</strong>  
+        プロジェクトとリポジトリを作成し、HTTPS の Clone URL と <strong>Personal Access Token (PAT)</strong> を用意する。
+        </li>
+        <li><strong>手順2（Unity）</strong>  
+         Unity プロジェクトを作成し、<code>.gitignore</code> など Git 向け設定を済ませてから初回コミットできる状態にする。
+        </li>
+        <li><strong>手順3（Sourcetree）</strong>  
+         ローカル（Unity）リポジトリとリモート（Azure DevOps）リポジトリを Sourcetreeに連携する。
+        </li>
+        <li><strong>手順4（トラブル対応）</strong>  
+        認証エラーが出た場合は、キーチェーン／資格情報に残っている古い PAT を消し、URLを再確認する。
+        </li>
+        <li><strong>手順5（運用）</strong>  
+        main / develop / feature ブランチとタグを組み合わせて、リリース用と開発用の履歴をきれいに分けて管理する。
+        </li>
+      </ul>
+      <p>
+      ひととおり流れを作っておけば、今後の Unity プロジェクトでも「Azure DevOps + Sourcetree」のセットアップをほぼ同じ手順で再利用できます。
+      </p>
+    </article>
+  </main>
+  <!-- ===== Footer ===== -->
   <footer>
     <div class="footer-inner">
-      <div>© <span id="year"></span> My Game Dev Portfolio</div>
+      <div>© <span id="year"></span> My Game Dev Notes</div>
+      <div><a href="../../dev-notes.html">← Dev Notes 一覧へ戻る</a></div>
     </div>
   </footer>
-
+  <!-- 前のページに戻るボタン -->
+  <button type="button"
+          id="backBtn"
+          class="back-btn"
+          aria-label="前のページに戻る">
+          back
+  </button>
+  <!-- 一番上に戻るボタン -->
+  <button type="button"
+          id="scrollTopBtn"
+          class="scroll-top-btn"
+          aria-label="ページ先頭に戻る">
+          top↑
+  </button>
+  <!-- 画像拡大用 Lightbox -->
+  <div id="lightbox" class="lightbox-overlay">
+    <div class="lightbox-content">
+      <button class="lightbox-close">×</button>
+      <img src="" alt="">
+    </div>
+  </div>
   <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+  // 年表示
+  document.getElementById("year").textContent = new Date().getFullYear();
+  // 目次開閉
+  (function() {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
+    const header = toc.querySelector('.toc-header');
+    header.addEventListener('click', function() {
+      toc.classList.toggle('open');
+    });
+  })();
+  
+  // ↑ 一番上に戻るボタン
+  (function() {
+    const btn = document.getElementById('scrollTopBtn');
+    if (!btn) return;
+    const THRESHOLD = 200;
+    window.addEventListener('scroll', function() {
+      btn.classList.add(window.scrollY > THRESHOLD ? 'visible' : 'hidden');
+      if (window.scrollY > THRESHOLD) btn.classList.add('visible');
+      else btn.classList.remove('visible');
+    });
+    btn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+  // ← 直前のページへ戻るボタン
+  (function() {
+    const backBtn = document.getElementById('backBtn');
+    if (!backBtn) return;
+    const THRESHOLD = 200;
+    // スクロール時に ↑ と同じ条件で表示
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > THRESHOLD) {
+        backBtn.classList.add('visible');
+      } else {
+        backBtn.classList.remove('visible');
+      }
+    });
+    // 戻る動作
+    backBtn.addEventListener('click', function() {
+      // 履歴がない場合は Dev Notes 一覧に戻す（保険）
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = "../../dev-notes.html";
+      }
+    });
+  })();
+   // 画像クリックで拡大表示（Lightbox）
+  (function() {
+    const overlay = document.getElementById("lightbox");
+    if (!overlay) return;
+
+    const overlayImg = overlay.querySelector("img");
+    const closeBtn  = overlay.querySelector(".lightbox-close");
+
+    // 記事本文内の画像を対象にする
+    const imgs = document.querySelectorAll(".info-box img");
+
+    imgs.forEach(img => {
+      img.style.cursor = "zoom-in"; // クリックできそうな見た目
+
+      img.addEventListener("click", () => {
+        overlayImg.src = img.src;
+        overlay.classList.add("active");
+      });
+    });
+
+    // 背景クリック or × クリックで閉じる
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay || e.target === closeBtn) {
+        overlay.classList.remove("active");
+        overlayImg.src = "";
+      }
+    });
+  })();
   </script>
+  
 </body>
 </html>

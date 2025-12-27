@@ -1,0 +1,469 @@
+:root {
+  --bg: #020617;
+  --bg-elevated: #020617;
+  --panel: #020617;
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.1);
+  --text: #e5e7eb;
+  --text-muted: #9ca3af;
+  --border-subtle: #1f2937;
+  --tag-bg: #0b1120;
+  --tag-border: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at top, #0f172a 0, #020617 50%, #000000 100%);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* スムーズスクロール */
+html {
+  scroll-behavior: smooth;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === ヘッダー / ナビ === */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(15,23,42,0.7));
+  border-bottom: 1px solid rgba(15,23,42,0.9);
+}
+
+.nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.logo-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, #38bdf8, #0ea5e9, #0369a1);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.7);
+}
+
+.logo span {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+nav a {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  color: var(--text-muted);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+}
+
+nav a:hover {
+  background: rgba(15,23,42,0.8);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+nav a.active {
+  background: rgba(15,23,42,0.9);
+  color: var(--accent);
+  border: 1px solid rgba(56,189,248,0.5);
+}
+
+/* === メイン === */
+
+main {
+  flex: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 3rem;
+}
+
+@media (max-width: 640px) {
+  main {
+    padding-top: 1.8rem;
+  }
+  .nav-inner {
+    padding-inline: 1rem;
+  }
+}
+
+/* === 記事ボックス === */
+
+.info-box {
+  border-radius: 1.1rem;
+  padding: 1.2rem 1.2rem 1.4rem;
+  background: radial-gradient(circle at top left, rgba(15,23,42,0.85), rgba(2,6,23,1));
+  border: 1px solid rgba(15,23,42,1);
+  box-shadow: 0 16px 35px rgba(15,23,42,0.9);
+  font-size: 0.94rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.info-box h1 {
+  font-size: 2rem;
+  color: var(--text);
+}
+
+.info-box h2 {
+  font-size: 1.5rem;
+  margin-top: 1.8rem;
+  margin-bottom: 0.6rem;
+  color: var(--text);
+}
+
+.info-box h3 {
+  font-size: 1.3rem;
+  margin-top: 1.3rem;
+  margin-bottom: 0.4rem;
+  color: var(--text);
+}
+.info-box h4 {
+  font-size: 1.2rem;
+  margin-top: 1.0rem;
+  margin-bottom: 0.2rem;
+  color: var(--text);
+}
+
+.info-box p {
+  margin: 0.4rem 0;
+}
+
+.info-box ul,
+.info-box ol {
+  padding-left: 1.2rem;
+  margin: 0.3rem 0 0.7rem;
+}
+
+.info-box li {
+  margin-bottom: 0.25rem;
+}
+
+pre {
+  margin-top: 0.6rem;
+}
+
+/* 画像のデフォルト調整（任意） */
+.info-box img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* === 目次（TOC） === */
+
+.toc-container {
+  margin: 1rem 0 1.5rem;
+  border-radius: 0.9rem;
+  border: 1px solid #1f2937;
+  background: #020617;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.85rem;
+  display: inline-block;    /* コンテンツ幅に合わせる */
+  width: fit-content;       /* 中身の文字に応じて横幅決定 */
+  max-width: 100%;          /* スマホで長すぎる時の保険 */
+
+}
+
+.toc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toc-header-title {
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.toc-toggle-icon {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  transition: transform 0.15s ease;
+}
+
+.toc-container.open .toc-toggle-icon {
+  transform: rotate(90deg);
+}
+
+.toc-body {
+  margin-top: 0.5rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.toc-container.open .toc-body {
+  max-height: 400px; /* セクション数に応じて調整 */
+}
+
+.toc-list {
+  list-style: none;
+  padding-left: 0.2rem;
+  margin: 0.2rem 0 0;
+}
+
+.toc-list li {
+  margin-bottom: 0.2rem;
+}
+
+.toc-list a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.toc-list a:hover {
+  color: #38bdf8;
+  text-decoration: underline;
+}
+
+/* 見出しジャンプ時のヘッダー被り対策 */
+.section-anchor {
+  scroll-margin-top: 90px; /* ヘッダー高さに合わせて調整 */
+}
+
+/* === フッター === */
+
+footer {
+  border-top: 1px solid rgba(15,23,42,1);
+  padding: 1.2rem 1.25rem 1.8rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+footer .footer-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+footer a {
+  color: var(--text-muted);
+}
+
+footer a:hover {
+  color: var(--accent);
+}
+
+/* === 一番上に戻るボタン === */
+
+.scroll-top-btn {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 5.2rem;
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(56,189,248,0.6);
+  background: radial-gradient(circle at 30% 20%, rgba(56,189,248,0.3), rgba(15,23,42,0.95));
+  color: #e5e7eb;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(15,23,42,0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+@media (min-width: 1400px) {
+  .scroll-top-btn {
+    right: 10rem;
+    bottom: 5.2rem;
+  }
+}
+@media (min-width: 1800px) {
+  .scroll-top-btn {
+    right: 20rem;
+    bottom: 5.2rem;
+  }
+}
+@media (min-width: 2200px) {
+  .scroll-top-btn {
+    right: 30rem;
+    bottom: 5.2rem;
+  }
+}
+.scroll-top-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scroll-top-btn:hover {
+  transform: translateY(-2px);
+}
+/* ==== 前のページへ戻るボタン ==== */
+
+.back-btn {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;   /* ← ↑ボタンの少し上に配置 */
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(56,189,248,0.6);
+  background: radial-gradient(circle at 30% 20%, rgba(56,189,248,0.3), rgba(15,23,42,0.95));
+  color: #e5e7eb;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(15,23,42,0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+}
+@media (min-width: 1400px) {
+  .back-btn {
+    right: 10rem;
+    bottom: 1.5rem;
+  }
+}
+@media (min-width: 1800px) {
+  .back-btn {
+    right: 20rem;
+    bottom: 1.5rem;
+  }
+}
+@media (min-width: 2200px) {
+  .back-btn {
+    right: 30rem;
+    bottom: 1.5rem;
+  }
+}
+/* ===== 画像拡大（Lightbox） ===== */
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;    /* 画面中央に */
+  justify-content: center;
+  z-index: 1000;
+}
+
+.lightbox-overlay.active {
+  display: flex;
+}
+
+.lightbox-content {
+  position: relative;
+}
+
+/* ★ 画像自体を “画面サイズ以内に収める” */
+.lightbox-content img {
+  display: block;
+
+  /* ここが超重要 👇 */
+  max-width: 92vw;      /* 画面横 92% まで */
+  max-height: 92vh;     /* 画面縦 92% まで */
+
+  width: auto;
+  height: auto;
+  object-fit: contain;
+
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+/* 閉じるボタン */
+.lightbox-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(15,23,42,0.9);
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-close:hover {
+  background: rgba(30,41,59,0.95);
+}
+/* 横並び画像エリア */
+.img-row {
+  display: flex;
+  gap: 1rem;         /* 画像の間隔 */
+  align-items: center;
+  flex-wrap: wrap;   /* スマホで折り返しOK */
+}
+
+/* 同じ高さに揃える */
+.img-row .same-height {
+  height: 200px;     /* ★ 好きな高さに調整 */
+  width: auto;
+  object-fit: contain; /* 中身が切れない */
+  border-radius: 10px;
+}
+a {
+  color: rgb(28, 108, 228);
+  text-decoration:underline;
+}
+a:hover {
+  color: rgb(28, 108, 228);
+  font-weight: bold;
+}
